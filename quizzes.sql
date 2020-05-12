@@ -21,3 +21,40 @@ FROM (SELECT name, CASE WHEN LEFT(UPPER(name), 1) IN ('A','E','I','O','U')
           CASE WHEN LEFT(UPPER(name), 1) IN ('A','E','I','O','U') 
                        THEN 0 ELSE 1 END AS other
          FROM accounts) t1;      
+
+SELECT LEFT(primary_poc, STRPOS(primary_poc, ' ') -1 ) first_name, 
+RIGHT(primary_poc, LENGTH(primary_poc) - STRPOS(primary_poc, ' ')) last_name
+FROM accounts;
+
+SELECT LEFT(name, STRPOS(name, ' ') -1 ) first_name, 
+       RIGHT(name, LENGTH(name) - STRPOS(name, ' ')) last_name
+FROM sales_reps;
+
+
+WITH t1 AS (
+ SELECT LEFT(primary_poc,     STRPOS(primary_poc, ' ') -1 ) first_name,  RIGHT(primary_poc, LENGTH(primary_poc) - STRPOS(primary_poc, ' ')) last_name, name
+ FROM accounts)
+SELECT first_name, last_name, CONCAT(first_name, '.', last_name, '@', name, '.com')
+FROM t1;
+
+WITH t1 AS (
+ SELECT LEFT(primary_poc,     STRPOS(primary_poc, ' ') -1 ) first_name,  RIGHT(primary_poc, LENGTH(primary_poc) - STRPOS(primary_poc, ' ')) last_name, name
+ FROM accounts)
+SELECT first_name, last_name, CONCAT(first_name, '.', last_name, '@', REPLACE(name, ' ', ''), '.com')
+FROM  t1;
+
+WITH t1 AS (
+ SELECT LEFT(primary_poc,     STRPOS(primary_poc, ' ') -1 ) first_name,  RIGHT(primary_poc, LENGTH(primary_poc) - STRPOS(primary_poc, ' ')) last_name, name
+ FROM accounts)
+SELECT first_name, last_name, CONCAT(first_name, '.', last_name, '@', name, '.com'), LEFT(LOWER(first_name), 1) || RIGHT(LOWER(first_name), 1) || LEFT(LOWER(last_name), 1) || RIGHT(LOWER(last_name), 1) || LENGTH(first_name) || LENGTH(last_name) || REPLACE(UPPER(name), ' ', '')
+FROM t1;
+
+
+
+SELECT *
+FROM sf_crime_data
+LIMIT 10;
+SELECT date orig_date, (SUBSTR(date, 7, 4) || '-' || LEFT(date, 2) || '-' || SUBSTR(date, 4, 2)) new_date
+FROM sf_crime_data;
+SELECT date orig_date, (SUBSTR(date, 7, 4) || '-' || LEFT(date, 2) || '-' || SUBSTR(date, 4, 2))::DATE new_date
+FROM sf_crime_data;
